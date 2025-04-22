@@ -1,40 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Captain Coder Plays DC Jam 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      display: flex;
-      height: 100vh;
-      justify-content: center;
-      align-items: center;
-      background: #111;
-      color: #fff;
       font-family: Arial, sans-serif;
+      background: #f0f0f0;
       margin: 0;
+      padding: 20px;
     }
-
-    .button {
-      background: #1a73e8;
-      border: none;
-      padding: 1em 2em;
-      font-size: 1.2em;
+    h1 {
+      margin-top: 0;
+    }
+    .controls {
+      margin-bottom: 1em;
+    }
+    .submit-button {
+      display: inline-block;
+      background-color: #1a73e8;
       color: white;
-      border-radius: 6px;
-      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2em;
+      padding: 0.75em 1.5em;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      margin-bottom: 1em;
+    }
+    .submit-button:hover {
+      background-color: #1666c1;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 420px));
+      gap: 1em;
+      justify-content: start;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      width: 420px;
+      height: 420px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .image {
+      width: 100%;
+      flex-grow: 1;
+      object-fit: contain;
+      border-radius: 4px;
+      margin-top: 12px;
+      max-height: 100%;
+    }
+    .label {
+      font-weight: bold;
+      margin-top: 8px;
+    }
+    .value {
+      margin-bottom: 8px;
+    }
+    .link {
+      color: #1a73e8;
       text-decoration: none;
     }
-
-    .button:hover {
-      background: #1666c1;
+    .queue {
+      color: #d93025;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+    #loadingMessage {
+      margin-bottom: 1em;
+      font-style: italic;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <a class="button" href="https://script.google.com/macros/s/AKfycby2vKFRhDr6YG266R9acPYSu8wYO9n9cu6ClGLDCk963cNyiXU3Pgxv4SB_NTlfC4Fi/exec" target="_blank">
-    Launch the Showcase
+  <h1>Captain Coder Plays DC Jam 2025</h1>
+
+  <div class="controls">
+    <input type="text" id="nameFilter" placeholder="Search by game name..." style="padding: 0.5em; width: 300px; margin-right: 1em;">
+    <label><input type="checkbox" id="filterQueue" checked> In Queue</label>
+    <label style="margin-left: 1em;"><input type="checkbox" id="filterPlayed" checked> Played</label>
+    <button id="refreshButton" style="margin-left: 1em; padding: 0.5em 1em;">Refresh</button>
+  </div>
+
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZgTzyEAixhdDn6I7DOehTkNtwg0veinvWU5wXmfVCN_fv-w/viewform?usp=dialog" target="_blank" class="submit-button">
+    Submit Your Game
   </a>
+
+  <div id="loadingMessage">Loading, please wait...</div>
+  <div class="grid" id="cardContainer"></div>
+
+  <script>
+    let allEntries = [];
+
+    async function loadEntries() {
+      const apiUrl = "https://script.google.com/macros/s/AKfycby2vKFRhDr6YG266R9acPYSu8wYO9n9cu6ClGLDCk963cNyiXU3Pgxv4SB_NTlfC4Fi/exec?format=json";
+      const loading = document.getElementById("loadingMessage");
+      const refreshButton = document.getElementById("refreshButton");
+      const container = document.getElementById("cardContainer");
+
+      loading.style.display = "block";
+      refreshButton.disabled = true;
+      container.innerHTML = "";
+
+      try {
+        const res = await fetch(apiUrl);
+        allEntries = await res.json();
+        applyFilters();
+      } catch (err) {
+        loading.textContent = "Failed to load entries.";
+        console.error(err);
+      } finally {
+        loading.style.display = "none";
+        refreshButton.disabled = false;
+      }
+    }
+
+    function applyFilters() {
+      const showQueue = document.getElementById('filterQueue').checked;
+      const showPlayed = document.getElementById('filterPlayed').checked;
+      const nameFilter = document.getElementById('nameFilter').value.toLowerCase().trim();
+      const nameWords = nameFilter.split(/\s+/).filter(w => w.length > 0);
+
+      const container = document.getElementById('cardContainer');
+      container.innerHTML = '';
+
+      const matchesName = (name) => {
+        if (nameWords.length === 0) return true;
+        const lowerName = name.toLowerCase();
+        return nameWords.some(word => lowerName.includes(word));
+      };
+
+      let filteredEntries = [];
+
+      if (showQueue && showPlayed) {
+        const playedEntries = allEntries
+          .filter(entry => !entry.inQueue && matchesName(entry.name))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        const queueEntries = allEntries
+          .filter(entry => entry.inQueue && matchesName(entry.name))
+          .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+        filteredEntries = [...playedEntries, ...queueEntries];
+      } else if (showQueue) {
+        filteredEntries = allEntries
+          .filter(entry => entry.inQueue && matchesName(entry.name))
+          .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      } else if (showPlayed) {
+        filteredEntries = allEntries
+          .filter(entry => !entry.inQueue && matchesName(entry.name))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      filteredEntries.forEach(entry => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const content = document.createElement("div");
+        content.style.flex = "0 0 auto";
+
+        const name = document.createElement("div");
+        name.className = "value";
+        name.innerHTML = `<span class="label">Name:</span> ${entry.name}`;
+        content.appendChild(name);
+
+        if (entry.inQueue) {
+          const submitted = document.createElement("div");
+          submitted.className = "value";
+          submitted.innerHTML = `<span class="label">Submitted at:</span> ${new Date(entry.timestamp).toLocaleString()}`;
+          content.appendChild(submitted);
+        }
+
+        const estimate = document.createElement("div");
+        estimate.className = "value";
+        estimate.innerHTML = `<span class="label">Estimated playtime:</span> ${entry.estimate || 'Not specified'}`;
+        content.appendChild(estimate);
+
+        if (entry.inQueue) {
+          const present = document.createElement("div");
+          present.className = "value";
+          present.innerHTML = `<span class="label">Do you want to be present when I play?:</span> ${entry.present}`;
+          content.appendChild(present);
+        }
+
+        const link = document.createElement("div");
+        link.className = "value";
+        link.innerHTML = `<span class="label">itch.io link:</span> <a href="${entry.link}" target="_blank" class="link">${entry.link}</a>`;
+        content.appendChild(link);
+
+        if (entry.ytLink) {
+          const yt = document.createElement("div");
+          yt.className = "value";
+          yt.innerHTML = `<span class="label">YT Link:</span> <a href="${entry.ytLink}" target="_blank" class="link">${entry.ytLink}</a>`;
+          content.appendChild(yt);
+        }
+
+        if (entry.inQueue) {
+          const queue = document.createElement("div");
+          queue.className = "queue";
+          queue.textContent = "In Queue";
+          content.appendChild(queue);
+        }
+
+        card.appendChild(content);
+
+        if (entry.screenshot) {
+          const img = document.createElement("img");
+          img.src = entry.screenshot;
+          img.alt = "Game Screenshot";
+          img.className = "image";
+          card.appendChild(img);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById('filterQueue').addEventListener('change', applyFilters);
+    document.getElementById('filterPlayed').addEventListener('change', applyFilters);
+    document.getElementById('nameFilter').addEventListener('input', applyFilters);
+    document.getElementById('refreshButton').addEventListener('click', loadEntries);
+
+    loadEntries();
+  </script>
 </body>
 </html>
