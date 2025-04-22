@@ -1,133 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Captain Coder Plays DC Jam 2025</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      margin: 0;
-      padding: 20px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(420px, 420px));
-      gap: 1em;
-      justify-content: start;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      padding: 16px;
-      width: 420px;
-      height: 420px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-sizing: border-box;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
     }
-    .image {
-      width: 100%;
-      flex-grow: 1;
-      object-fit: contain;
-      border-radius: 4px;
-      margin-top: 12px;
-      max-height: 100%;
-    }
-    .label {
-      font-weight: bold;
-      margin-top: 8px;
-    }
-    .value {
-      margin-bottom: 8px;
-    }
-    .link {
-      color: #1a73e8;
+
+    .button {
+      background: #1a73e8;
+      border: none;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
       text-decoration: none;
     }
-    .queue {
-      color: #d93025;
-      font-weight: bold;
-      margin-top: 12px;
+
+    .button:hover {
+      background: #1666c1;
     }
   </style>
 </head>
 <body>
-  <h1>Captain Coder Plays DC Jam 2025</h1>
-  <div class="grid" id="cardContainer"></div>
-
-  <script>
-    async function loadEntries() {
-      const url = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec?format=json";
-      const res = await fetch(url);
-      const entries = await res.json();
-
-      const container = document.getElementById("cardContainer");
-      container.innerHTML = "";
-
-      entries.forEach(entry => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const name = document.createElement("div");
-        name.className = "value";
-        name.innerHTML = `<span class="label">Name:</span> ${entry.name}`;
-        card.appendChild(name);
-
-        if (entry.inQueue) {
-          const submitted = document.createElement("div");
-          submitted.className = "value";
-          const submittedDate = new Date(entry.timestamp);
-          submitted.innerHTML = `<span class="label">Submitted at:</span> ${submittedDate.toLocaleString()}`;
-          card.appendChild(submitted);
-        }
-
-        const estimate = document.createElement("div");
-        estimate.className = "value";
-        estimate.innerHTML = `<span class="label">Estimated playtime:</span> ${entry.estimate || 'Not specified'}`;
-        card.appendChild(estimate);
-
-        if (entry.inQueue) {
-          const present = document.createElement("div");
-          present.className = "value";
-          present.innerHTML = `<span class="label">Do you want to be present when I play?:</span> ${entry.present}`;
-          card.appendChild(present);
-        }
-
-        const link = document.createElement("div");
-        link.className = "value";
-        link.innerHTML = `<span class="label">itch.io link:</span> <a href="${entry.link}" target="_blank" class="link">${entry.link}</a>`;
-        card.appendChild(link);
-
-        if (entry.ytLink) {
-          const yt = document.createElement("div");
-          yt.className = "value";
-          yt.innerHTML = `<span class="label">YT Link:</span> <a href="${entry.ytLink}" target="_blank" class="link">${entry.ytLink}</a>`;
-          card.appendChild(yt);
-        }
-
-        if (entry.inQueue) {
-          const queue = document.createElement("div");
-          queue.className = "queue";
-          queue.textContent = "In Queue";
-          card.appendChild(queue);
-        }
-
-        if (entry.screenshot) {
-          const img = document.createElement("img");
-          img.src = entry.screenshot;
-          img.alt = "Game Screenshot";
-          img.className = "image";
-          card.appendChild(img);
-        }
-
-        container.appendChild(card);
-      });
-    }
-
-    loadEntries();
-  </script>
+  <a class="button" href="https://script.google.com/macros/s/AKfycby2vKFRhDr6YG266R9acPYSu8wYO9n9cu6ClGLDCk963cNyiXU3Pgxv4SB_NTlfC4Fi/exec" target="_blank">
+    Launch the Showcase
+  </a>
 </body>
 </html>
