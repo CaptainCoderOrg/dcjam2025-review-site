@@ -299,6 +299,15 @@
           queue.className = "queue";
           queue.textContent = "In Queue";
           content.appendChild(queue);
+          
+          if (entry.present === "I would prefer to watch live")
+          {
+            const queue = document.createElement("div");
+            queue.className = "queue";
+            queue.textContent = "Would like to watch live";
+            content.appendChild(queue);
+          }
+
         }
 
         card.appendChild(content);
