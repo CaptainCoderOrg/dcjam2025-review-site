@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <title>Captain Coder Plays DC Jam 2025</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -97,11 +102,60 @@
       font-style: italic;
       color: #555;
     }
+
+    .twitch-button {
+      display: inline-block;
+      background-color: #9146FF;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2em;
+      padding: 0.75em 1.5em;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      margin-bottom: 1em;
+    }
+
+    .twitch-button i {
+      margin-right: 0.5em;
+    }
+
+    .twitch-button:hover {
+      background-color: #772ce8;
+    }
+
+    .top-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      margin-bottom: 1em;
+      align-items: center;
+    }
+
+    .top-buttons .twitch-button,
+    .top-buttons .submit-button {
+      margin: 0;
+    }
+
+    .twitch-button i {
+      margin-right: 0.5em;
+    }
   </style>
 </head>
 
 <body>
   <h1>Captain Coder Plays DC Jam 2025</h1>
+
+  <div class="top-buttons">
+    <a href="https://www.twitch.tv/thecaptaincoder" target="_blank" class="twitch-button">
+      <i class="fab fa-twitch"></i>Twitch
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZgTzyEAixhdDn6I7DOehTkNtwg0veinvWU5wXmfVCN_fv-w/viewform?usp=dialog"
+      target="_blank" class="submit-button">
+      Submit Your Game
+    </a>
+  </div>
+
 
   <div class="controls">
     <input type="text" id="nameFilter" placeholder="Search by game name..."
@@ -110,11 +164,6 @@
     <label style="margin-left: 1em;"><input type="checkbox" id="filterPlayed" checked> Played</label>
     <button id="refreshButton" style="margin-left: 1em; padding: 0.5em 1em;">Refresh</button>
   </div>
-
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZgTzyEAixhdDn6I7DOehTkNtwg0veinvWU5wXmfVCN_fv-w/viewform?usp=dialog"
-    target="_blank" class="submit-button">
-    Submit Your Game
-  </a>
 
   <div id="loadingMessage">Loading, please wait...</div>
   <div class="grid" id="cardContainer"></div>
@@ -215,7 +264,7 @@
           const playButton = document.createElement("a");
           playButton.href = entry.link;
           playButton.target = "_blank";
-          playButton.textContent = "Play on Itch.io";
+          playButton.innerHTML = `<i class="fas fa-gamepad" style="margin-right: 0.5em;"></i>Play on Itch.io`;
           playButton.style.display = "inline-block";
           playButton.style.padding = "0.5em 1em";
           playButton.style.backgroundColor = "#1a73e8";
@@ -230,7 +279,7 @@
           const ytButton = document.createElement("a");
           ytButton.href = entry.ytLink;
           ytButton.target = "_blank";
-          ytButton.textContent = "Watch on YouTube";
+          ytButton.innerHTML = `<i class="fab fa-youtube" style="margin-right: 0.5em;"></i>Watch on YouTube`;
           ytButton.style.display = "inline-block";
           ytButton.style.padding = "0.5em 1em";
           ytButton.style.backgroundColor = "#d93025";
@@ -242,6 +291,7 @@
         }
 
         content.appendChild(buttonRow);
+
 
 
         if (entry.inQueue) {
