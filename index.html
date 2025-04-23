@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Captain Coder Plays DC Jam 2025</title>
@@ -11,12 +12,15 @@
       margin: 0;
       padding: 20px;
     }
+
     h1 {
       margin-top: 0;
     }
+
     .controls {
       margin-bottom: 1em;
     }
+
     .submit-button {
       display: inline-block;
       background-color: #1a73e8;
@@ -29,31 +33,36 @@
       transition: background-color 0.2s ease;
       margin-bottom: 1em;
     }
+
     .submit-button:hover {
       background-color: #1666c1;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(420px, 420px));
       gap: 1em;
       justify-content: start;
     }
+
     .card {
       background: white;
       border-radius: 8px;
       padding: 16px;
       width: 420px;
       height: 420px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       box-sizing: border-box;
     }
+
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+
     .image {
       width: 100%;
       flex-grow: 1;
@@ -62,22 +71,27 @@
       margin-top: 12px;
       max-height: 100%;
     }
+
     .label {
       font-weight: bold;
       margin-top: 8px;
     }
+
     .value {
       margin-bottom: 8px;
     }
+
     .link {
       color: #1a73e8;
       text-decoration: none;
     }
+
     .queue {
       color: #d93025;
       font-weight: bold;
       margin-top: 12px;
     }
+
     #loadingMessage {
       margin-bottom: 1em;
       font-style: italic;
@@ -85,17 +99,20 @@
     }
   </style>
 </head>
+
 <body>
   <h1>Captain Coder Plays DC Jam 2025</h1>
 
   <div class="controls">
-    <input type="text" id="nameFilter" placeholder="Search by game name..." style="padding: 0.5em; width: 300px; margin-right: 1em;">
+    <input type="text" id="nameFilter" placeholder="Search by game name..."
+      style="padding: 0.5em; width: 300px; margin-right: 1em;">
     <label><input type="checkbox" id="filterQueue" checked> In Queue</label>
     <label style="margin-left: 1em;"><input type="checkbox" id="filterPlayed" checked> Played</label>
     <button id="refreshButton" style="margin-left: 1em; padding: 0.5em 1em;">Refresh</button>
   </div>
 
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZgTzyEAixhdDn6I7DOehTkNtwg0veinvWU5wXmfVCN_fv-w/viewform?usp=dialog" target="_blank" class="submit-button">
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZgTzyEAixhdDn6I7DOehTkNtwg0veinvWU5wXmfVCN_fv-w/viewform?usp=dialog"
+    target="_blank" class="submit-button">
     Submit Your Game
   </a>
 
@@ -188,24 +205,44 @@
         estimate.innerHTML = `<span class="label">Estimated playtime:</span> ${entry.estimate || 'Not specified'}`;
         content.appendChild(estimate);
 
-        if (entry.inQueue) {
-          const present = document.createElement("div");
-          present.className = "value";
-          present.innerHTML = `<span class="label">Do you want to be present when I play?:</span> ${entry.present}`;
-          content.appendChild(present);
-        }
+        const buttonRow = document.createElement("div");
+        buttonRow.style.display = "flex";
+        buttonRow.style.gap = "0.5em";
+        buttonRow.style.flexWrap = "wrap";
+        buttonRow.style.marginTop = "8px";
 
-        const link = document.createElement("div");
-        link.className = "value";
-        link.innerHTML = `<span class="label">itch.io link:</span> <a href="${entry.link}" target="_blank" class="link">${entry.link}</a>`;
-        content.appendChild(link);
+        if (entry.link) {
+          const playButton = document.createElement("a");
+          playButton.href = entry.link;
+          playButton.target = "_blank";
+          playButton.textContent = "Play on Itch.io";
+          playButton.style.display = "inline-block";
+          playButton.style.padding = "0.5em 1em";
+          playButton.style.backgroundColor = "#1a73e8";
+          playButton.style.color = "white";
+          playButton.style.borderRadius = "6px";
+          playButton.style.textDecoration = "none";
+          playButton.style.fontWeight = "bold";
+          buttonRow.appendChild(playButton);
+        }
 
         if (entry.ytLink) {
-          const yt = document.createElement("div");
-          yt.className = "value";
-          yt.innerHTML = `<span class="label">YT Link:</span> <a href="${entry.ytLink}" target="_blank" class="link">${entry.ytLink}</a>`;
-          content.appendChild(yt);
+          const ytButton = document.createElement("a");
+          ytButton.href = entry.ytLink;
+          ytButton.target = "_blank";
+          ytButton.textContent = "Watch on YouTube";
+          ytButton.style.display = "inline-block";
+          ytButton.style.padding = "0.5em 1em";
+          ytButton.style.backgroundColor = "#d93025";
+          ytButton.style.color = "white";
+          ytButton.style.borderRadius = "6px";
+          ytButton.style.textDecoration = "none";
+          ytButton.style.fontWeight = "bold";
+          buttonRow.appendChild(ytButton);
         }
+
+        content.appendChild(buttonRow);
+
 
         if (entry.inQueue) {
           const queue = document.createElement("div");
@@ -236,4 +273,5 @@
     loadEntries();
   </script>
 </body>
+
 </html>
