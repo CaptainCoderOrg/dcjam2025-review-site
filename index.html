@@ -314,7 +314,7 @@
 
         if (entry.screenshot) {
           const img = document.createElement("img");
-          img.src = entry.screenshot;
+          img.src = `images/${entry.screenshot}`;
           img.alt = "Game Screenshot";
           img.className = "image";
           card.appendChild(img);
